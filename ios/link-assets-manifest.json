@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "Src/Assets/Fonts/Inter_18pt-Medium.ttf",
+      "sha1": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    {
+      "path": "Src/Assets/Fonts/SIUI.ttf",
+      "sha1": "26deb1a45c1a9b18795540856ef501ec2914b892"
+    }
+  ]
+}
