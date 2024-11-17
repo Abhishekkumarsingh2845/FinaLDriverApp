@@ -5,26 +5,41 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '15.1'  # Set the iOS deployment target to 14.0
+platform :ios, '15.1'  # Set the iOS deployment target to 15.1
+
+# Enable modular headers globally for all dependencies
+use_modular_headers!
+
 prepare_react_native_project!
 
+# Check for frameworks linkage
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
+else
+  # Enable static framework linking for Firebase
+  use_frameworks! :linkage => :static
 end
 
 target 'AwesomeProject' do
+  # Use native modules
   config = use_native_modules!
 
+  # React Native integration
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   # Add the Google Maps pod
   pod 'react-native-google-maps', :path => '../node_modules/react-native-maps'
+
+  # Firebase pods with modular headers enabled
+  pod 'FirebaseCore'
+  pod 'FirebaseFirestore'
+  pod 'FirebaseCoreInternal'
+  pod 'GoogleUtilities'
 
   target 'AwesomeProjectTests' do
     inherit! :complete
@@ -32,12 +47,11 @@ target 'AwesomeProject' do
   end
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+    # React Native post install hook to apply required configurations
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :mac_catalyst_enabled => false
     )
   end
 end

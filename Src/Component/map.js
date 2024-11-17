@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
 const MapViewComponent = () => {
   const initialRegion = {
@@ -29,10 +29,12 @@ const MapViewComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor:"red",
   },
   map: {
     width: '100%',
     height: '100%',
+    // backgroundColor: 'red',
   },
 });
 

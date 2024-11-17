@@ -1,47 +1,43 @@
-import {StyleSheet, Text, View} from 'react-native';
+// import {StyleSheet, Text, View} from 'react-native';
+// import React from 'react';
+// import {NavigationContainer} from '@react-navigation/native';
+// import {createNativeStackNavigator} from '@react-navigation/native-stack';
+// import {SafeAreaProvider} from 'react-native-safe-area-context';
+// import BottomTab from './Src/Navigation/BottomTab';
+// import AppNavigator from './Src/Navigation/AppNavigator';
+// import AuthNavigator from './Src/Navigation/AuthNavigator';
+// import {Provider, useSelector} from 'react-redux';
+// import Main from './Src/Main';
+// import {store} from './Src/Redux/AuthRedux/store';
+
+// const Stack = createNativeStackNavigator();
+
+// const App = () => {
+//   store.getState().user;
+
+//   return (
+//     <Provider store={store}>
+//       <Main />
+//     </Provider>
+//   );
+// };
+
+// export default App;
+
+// const styles = StyleSheet.create({});
+
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Splash from './Src/Screen/Splash';
-import Walkthough from './Src/Screen/Walkthough';
-import Login from './Src/Screen/Login';
-import Otp from './Src/Screen/Otp';
-import Register from './Src/Screen/Register';
-import OtpVerify from './Src/Screen/OtpVerify';
-import Signup from './Src/Screen/Signup';
-import Otpverifyemail from './Src/Screen/Otpverifyemail';
-import Complete from './Src/Screen/Complete';
-import BottomTab from './Src/Navigation/BottomTab';
-import Destination from './Src/Screen/Destination';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {store, persistor} from './Src/Redux/AuthRedux/store';
+import Main from './Src/Main';
 
-const Stack = createNativeStackNavigator();
-
-const App = () => {
+export default function App() {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          {/* <Stack.Screen name="splash" component={Splash} />
-          <Stack.Screen name="Walkthough" component={Walkthough} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Otp" component={Otp} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="OtpVerify" component={OtpVerify} />
-          <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="Otpverifyemail" component={Otpverifyemail} />
-          <Stack.Screen name="Complete" component={Complete} /> */}
-          <Stack.Screen name="BottomTab" component={BottomTab} />
-          <Stack.Screen name="Destination" component={Destination}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Main />
+      </PersistGate>
+    </Provider>
   );
-};
-
-export default App;
-
-const styles = StyleSheet.create({});
+}

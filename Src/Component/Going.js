@@ -1,17 +1,16 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Going = () => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('Destination')}>
-      <Image
-        source={require('././../Assets/Images/ss.png')}
-        style={styles.img}
-      />
+      onPress={() =>
+        navigation.navigate('AppNavigator', {screen: 'Destination'})
+      }>
+      <Image source={require('./../Assets/Images/ss.png')} style={styles.img} />
       <Text style={styles.txt}>Where are you going?</Text>
     </TouchableOpacity>
   );

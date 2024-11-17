@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
+    <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-<string>Your description here.</string>
+    <string>Your description here.</string>
 	<key>CFBundleDisplayName</key>
 	<string>AwesomeProject</string>
 	<key>CFBundleExecutable</key>
@@ -54,5 +54,10 @@
 		<string>Inter_18pt-Medium.ttf</string>
 		<string>SIUI.ttf</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+<key>NSAllowsArbitraryLoads</key>
+<true/>
+</dict >
 </dict>
 </plist>

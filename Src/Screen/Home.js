@@ -1,109 +1,4 @@
-// import React, {useCallback, useRef} from 'react';
-// import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-// import {GestureHandlerRootView} from 'react-native-gesture-handler';
-// import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
-// import MapViewComponent from './../Component/map';
-// import Going from '../Component/Going';
-// import PopularPlaces from '../Component/PopularPlaces';
-// import Userlocation from '../Component/Userlocation';
-
-// const Home = () => {
-//   const bottomSheetRef = useRef(null);
-
-//   const handleSheetChanges = useCallback(() => {
-//     console.log('handleSheetChanges');
-//   }, []);
-
-//   return (
-//     <GestureHandlerRootView style={styles.container}>
-//       <MapViewComponent />
-
-//       <BottomSheet
-//         ref={bottomSheetRef}
-//         onChange={handleSheetChanges}
-//         index={0}
-//         enablePanDownToClose={true}
-//         snapPoints={['38.5%']}
-//         handleComponent={null}
-//         backgroundStyle={styles.bottomSheetBackground}>
-//         <BottomSheetView style={styles.contentContainer}>
-//           <View style={styles.booking}>
-//             <TouchableOpacity style={styles.con1}>
-//               <Image
-//                 source={require('./../Assets/Images/car.png')}
-//                 style={styles.carimg}
-//               />
-//               <Text style={styles.txt}>Book Now</Text>
-//             </TouchableOpacity>
-//             <TouchableOpacity style={styles.con1}>
-//               <Image
-//                 source={require('./../Assets/Images/car.png')}
-//                 style={styles.carimg}
-//               />
-//               <Text style={styles.txt}>Outstation</Text>
-//             </TouchableOpacity>
-//             <TouchableOpacity style={styles.con1}>
-//               <Image
-//                 source={require('./../Assets/Images/car.png')}
-//                 style={styles.carimg}
-//               />
-//               <Text style={styles.txt}>Book Later</Text>
-//             </TouchableOpacity>
-//           </View>
-//           <Going />
-//           <PopularPlaces />
-//           <PopularPlaces />
-//         </BottomSheetView>
-//       </BottomSheet>
-//     </GestureHandlerRootView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: 'grey',
-//   },
-//   contentContainer: {
-//     flex: 1,
-//     alignItems: 'center',
-//   },
-//   bottomSheetBackground: {
-//     borderRadius: 0,
-//   },
-//   booking: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-around',
-//     width: '100%',
-//     paddingVertical: 10,
-//     backgroundColor: 'white',
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.5,
-//     elevation: 5,
-//   },
-//   carimg: {
-//     width: 70,
-//     height: 50,
-//     resizeMode: 'contain',
-//   },
-//   con1: {
-//     alignItems: 'center',
-//   },
-//   txt: {
-//     fontSize: 14,
-//     fontWeight: '400',
-//     fontFamily: 'Inter_18pt-Medium',
-//   },
-// });
-
-// export default Home;
-
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -111,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  StatusBar,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
@@ -118,21 +14,35 @@ import MapViewComponent from './../Component/map';
 import Going from '../Component/Going';
 import PopularPlaces from '../Component/PopularPlaces';
 import Userlocation from '../Component/Userlocation';
+import {useDispatch} from 'react-redux';
+import {logout} from './../Redux/AuthRedux/userSlice';
 
-const Home = () => {
+const Home = ({navigation}) => {
+  const [selected, setselected] = useState(null);
   const bottomSheetRef = useRef(null);
+  const dispatch = useDispatch();
 
   const handleSheetChanges = useCallback(() => {
     console.log('handleSheetChanges');
   }, []);
 
+  const handleLogout = () => {
+    dispatch(logout());
+    console.log('Logged out');
+    navigation.navigate('Splash');
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
+      <StatusBar backgroundColor={"#ffffff"} barStyle={"dark-content"}/>
       <View style={styles.searchContainer}>
-        <Image
-          source={require('./../Assets/Images/threedot.png')}
-          style={styles.threed}
-        />
+        <TouchableOpacity onPress={handleLogout}>
+          <Image
+            source={require('./../Assets/Images/threedot.png')}
+            style={styles.threed}
+          />
+        </TouchableOpacity>
+
         <Image source={require('./../Assets/Images/dd.png')} style={styles.d} />
         <TextInput
           style={styles.searchBar}
@@ -145,7 +55,11 @@ const Home = () => {
         />
       </View>
       <Userlocation />
-      <MapViewComponent />
+
+      {/* <MapViewComponent /> */}
+      <View style={StyleSheet.absoluteFill}>
+        <MapViewComponent style={StyleSheet.absoluteFillObject} />
+      </View>
 
       <BottomSheet
         ref={bottomSheetRef}
@@ -157,21 +71,36 @@ const Home = () => {
         backgroundStyle={styles.bottomSheetBackground}>
         <BottomSheetView style={styles.contentContainer}>
           <View style={styles.booking}>
-            <TouchableOpacity style={styles.con1}>
+            <TouchableOpacity
+              style={[
+                styles.con1,
+                selected === 'Book Now' && styles.selectedarea,
+              ]}
+              onPress={() => setselected('Book Now')}>
               <Image
                 source={require('./../Assets/Images/car.png')}
                 style={styles.carimg}
               />
               <Text style={styles.txt}>Book Now</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.con1}>
+            <TouchableOpacity
+              style={[
+                styles.con1,
+                selected === 'Outstation' && styles.selectedarea,
+              ]}
+              onPress={() => setselected('Outstation')}>
               <Image
                 source={require('./../Assets/Images/car.png')}
                 style={styles.carimg}
               />
               <Text style={styles.txt}>Outstation</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.con1}>
+            <TouchableOpacity
+              style={[
+                styles.con1,
+                selected === 'Book Later' && styles.selectedarea,
+              ]}
+              onPress={() => setselected('Book Later')}>
               <Image
                 source={require('./../Assets/Images/car.png')}
                 style={styles.carimg}
@@ -180,8 +109,8 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <Going />
-          <PopularPlaces />
-          <PopularPlaces />
+          <PopularPlaces paddingHorizontal={15} />
+          <PopularPlaces paddingHorizontal={15} />
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>
@@ -191,7 +120,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'grey',
+    backgroundColor: '#ffff',
   },
   searchContainer: {
     position: 'absolute',
@@ -212,9 +141,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     // backgroundColor:"red",
   },
+  selectedarea: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 2,
+  },
+
   contentContainer: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor:"#ffff",
   },
   bottomSheetBackground: {
     borderRadius: 0,
@@ -223,7 +158,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    paddingVertical: 10,
+    paddingVertical: 8,
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {
@@ -241,6 +176,7 @@ const styles = StyleSheet.create({
   },
   con1: {
     alignItems: 'center',
+    paddingBottom: 5,
   },
   txt: {
     fontSize: 14,

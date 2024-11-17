@@ -38,6 +38,8 @@
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
 #import <GoogleMaps/GoogleMaps.h> // Import Google Maps
+#import <Firebase.h>
+
 
 @implementation AppDelegate
 
@@ -47,6 +49,8 @@
   
   // Provide your Google Maps API key
   [GMSServices provideAPIKey:@"YOUR_ACTUAL_API_KEY_HERE"]; // Replace with your API key
+
+  [FIRApp configure];
 
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

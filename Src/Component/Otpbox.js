@@ -1,15 +1,43 @@
-import {StyleSheet, Text, TextInput, View} from 'react-native';
-import React from 'react';
 
-const Otpbox = ({marginVertical}) => {
+import {StyleSheet, TextInput, View} from 'react-native';
+import React, {useRef} from 'react';
+
+const Otpbox = ({marginVertical, otp, setOtp}) => {
+  // Create an array of refs for each OTP input
+  const inputRefs = useRef([]);
+
+  const handleOtpChange = (text, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = text;
+    setOtp(newOtp);
+
+    // Automatically focus on the next input box if current one is filled
+    if (text && index < otp.length - 1) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleKeyPress = (event, index) => {
+    // If the user presses backspace and the current input is empty, move focus to the previous input
+    if (event.nativeEvent.key === 'Backspace' && otp[index] === '' && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
   return (
     <View style={[styles.container, {marginVertical}]}>
-      <TextInput style={styles.otpbox} inputMode="numeric" />
-      <TextInput style={styles.otpbox} inputMode="numeric" />
-      <TextInput style={styles.otpbox} inputMode="numeric" />
-      <TextInput style={styles.otpbox} inputMode="numeric" />
-      <TextInput style={styles.otpbox} inputMode="numeric" />
-      <TextInput style={styles.otpbox} inputMode="numeric" />
+      {otp.map((digit, index) => (
+        <TextInput
+          key={index}
+          style={styles.otpbox}
+          inputMode="numeric"
+          maxLength={1}
+          value={digit}
+          onChangeText={text => handleOtpChange(text, index)}
+          ref={el => (inputRefs.current[index] = el)} // Assign ref to each input
+          onKeyPress={event => handleKeyPress(event, index)} // Handle backspace key press
+        />
+      ))}
     </View>
   );
 };
@@ -20,9 +48,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'center',
-
     width: '100%',
-    // backgroundColor: 'red',
   },
   otpbox: {
     width: 50,

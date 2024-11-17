@@ -1,16 +1,78 @@
+import React, {useState} from 'react';
 import {
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 import Color from '../Utlis/color';
-import PrimaryInput from '../Component/PrimaryInput';
 import PrimaryBtn from '../Component/PrimaryBtn';
+import PrimaryInput from '../Component/PrimaryInput';
+import {useDispatch} from 'react-redux';
+import {setPhn} from '../Redux/AuthRedux/userSlice';
 
 const Login = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [loading, setloding] = useState(false);
+  const [phone, setPhone] = useState('');
+
+  const sendOtp = async () => {
+    if (phone.length !== 10) {
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid Phone Number',
+        text2: 'Please enter a valid 10-digit phone number.',
+        position: 'top',
+      });
+      return;
+    }
+
+    setloding(true);
+
+    try {
+      const response = await axios.post(
+        'http://15.206.16.230:5010/api/v1/customer/auth/loginOtpSend',
+        {
+          phone: phone,
+          phoneCode: '91',
+        },
+      );
+      const {code, status, message, data} = response.data;
+
+      if (code === 200 && status) {
+        Toast.show({
+          type: 'success',
+          text1: 'OTP Sent',
+          text2: 'Please check your phone for the OTP.',
+        });
+        navigation.navigate('Otp', {otp: data.otp, phone});
+        dispatch(setPhn(phone));
+        console.log('OTP:', data.otp);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: message || 'Something went wrong, please try again.',
+        });
+        Alert.alert('Error', message || 'An unexpected error occurred.');
+      }
+    } catch (error) {
+      console.error('API Error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'API Error',
+        text2: 'Failed to send OTP. Please try again later.',
+      });
+    } finally {
+      setloding(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={'#F4F4F3'} barStyle={'dark-content'} />
@@ -19,23 +81,38 @@ const Login = ({navigation}) => {
       </View>
 
       <Text style={styles.subtxt}>Enter your Mobile Number to login.</Text>
-      <PrimaryInput marginTop={30} placehld={'Mobile Number'} />
-      <PrimaryBtn
+
+      <PrimaryInput
         marginTop={30}
-        title={'Login'}
-        press={() => navigation.navigate('Otp')}
+        placehld={'Mobile Number'}
+        value={phone}
+        keyboardType="numeric"
+        maxLength={10}
+        onChangeText={setPhone}
       />
+
+      <PrimaryBtn marginTop={30} title={'Login'} press={sendOtp} />
+      {loading && ( // Show loader if loading is true
+        <ActivityIndicator
+          size="large"
+          color={Color.primary}
+          style={styles.loader}
+        />
+      )}
       <TouchableOpacity>
         <Text style={styles.clickingstr}>
           By clicking start, you agree to our
         </Text>
-        <Text style={styles.termscondition}>Terms and Conditions </Text>
+        <Text style={styles.termscondition}>Terms and Conditions</Text>
       </TouchableOpacity>
+
       <TouchableOpacity>
         <Text style={styles.account}>
           Don’t have an account?<Text style={styles.signup}> Sign Up</Text>
         </Text>
       </TouchableOpacity>
+
+      <Toast ref={ref => Toast.setRef(ref)} />
     </View>
   );
 };
@@ -49,7 +126,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   maintxt: {
-    // marginTop: 180,
     fontSize: 22,
     fontWeight: '700',
     fontFamily: 'Inter_18pt-Medium',
@@ -81,12 +157,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   account: {
-    marginTop: 280,
+    marginTop: 'auto',
     fontSize: 13,
     fontWeight: '400',
     fontFamily: 'Inter_18pt-Medium',
     color: Color.grey,
     textAlign: 'center',
+    paddingBottom: 20,
   },
   signup: {
     fontSize: 13,

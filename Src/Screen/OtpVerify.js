@@ -1,38 +1,59 @@
 import {
+  Alert,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Header from '../Component/Header';
 import Otpbox from '../Component/Otpbox';
 import PrimaryBtn from '../Component/PrimaryBtn';
 import Color from '../Utlis/color';
 import Back from '../Component/Back';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
 
-const OtpVerify = ({navigation}) => {
+const OtpVerify = ({navigation, route}) => {
+  const {otp} = route.params;
+  const [enterotp, setenterotp] = useState(['', '', '', '', '', '']);
+
+  const token = useSelector(state => state.auth.token);
+  console.log('tokenn herhdskjzgczhkdcgyjgayegyafgyutyufye->>>', token);
+
+  const vfy = () => {
+    const finalotp = enterotp.join('');
+    if (finalotp == String(otp)) {
+      if (token == String(null)) {
+        navigation.navigate('Signup');
+        console.log('Navigating to Signup');
+      } else {
+        navigation.navigate('BottomTab');
+        console.log('Navigating to BottomTab');
+      }
+    } else {
+      Alert.alert('Invalid OTP', 'The entered OTP is incorrect.');
+    }
+  };
+
   return (
-    <SafeAreaView style={{flex:1}} edges={['top']}>
-      
+    <SafeAreaView style={{flex: 1}} edges={['top']}>
       <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#F4F4F3'} />
-      <Back  />
-      <Header title={'OTP Verification'} marginTop={30} />
-      <Text style={styles.txt}>We have sent you aaa 6 digit verification</Text>
-      <Text style={styles.txt1}>
-        code on <Text style={styles.no}>+91 6556565656</Text>
-      </Text>
-      <Otpbox marginVertical={20} />
-      <PrimaryBtn
-        title={'Verify'}
-        press={() => navigation.navigate('Signup')}
-      />
-      <TouchableOpacity style={{marginTop: 30}}>
-        <Text style={styles.chngeno}>Change my mobile number</Text>
-      </TouchableOpacity>
+        <StatusBar barStyle={'dark-content'} backgroundColor={'#F4F4F3'} />
+        <Back />
+        <Header title={'OTP Verification'} marginTop={30} />
+        <Text style={styles.txt}>
+          We have sent you a 6-digit verification code
+        </Text>
+        <Text style={styles.txt1}>
+          code on <Text style={styles.no}>+91 6556565656</Text>
+        </Text>
+        <Otpbox marginVertical={20} otp={enterotp} setOtp={setenterotp} />
+        <PrimaryBtn title={'Verify'} press={vfy} />
+        <TouchableOpacity style={{marginTop: 30}}>
+          <Text style={styles.chngeno}>Change my mobile number</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
