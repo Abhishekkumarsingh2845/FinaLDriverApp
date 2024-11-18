@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   StatusBar,
   StyleSheet,
   Text,
@@ -17,9 +18,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {setToken} from '../Redux/AuthRedux/userSlice';
+import Color from '../Utlis/color';
 
 const Signup = ({navigation}) => {
   const finalphone = useSelector(state => state.auth.phoneNumber);
+  const [loading, setloding] = useState(false);
   console.log('phonenonnnncbdbfhjfghjfgdjzhgfdhj->>>', finalphone);
   console.log(finalphone);
   const dispatch = useDispatch();
@@ -32,6 +35,7 @@ const Signup = ({navigation}) => {
   const [gender, setGender] = useState('');
 
   const rg = async () => {
+    setloding(true);
     try {
       const payload = {
         fullName: name || 'John Doe',
@@ -73,6 +77,8 @@ const Signup = ({navigation}) => {
         'Error during API call',
         error?.response?.data || error.message,
       );
+    } finally {
+      setloding(false);
     }
   };
 
@@ -98,12 +104,14 @@ const Signup = ({navigation}) => {
             value={day}
             onChangeText={setDay}
             style={styles.day}
+            maxLength={2}
             placeholder="Day"
             placeholderTextColor={'#B2B5C4'}
           />
           <TextInput
             style={styles.month}
             value={month}
+            maxLength={2}
             onChangeText={setMonth}
             placeholder="Month"
             placeholderTextColor={'#B2B5C4'}
@@ -112,6 +120,7 @@ const Signup = ({navigation}) => {
             style={styles.year}
             value={year}
             onChangeText={setYear}
+            maxLength={4}
             placeholder="Year"
             placeholderTextColor={'#B2B5C4'}
           />
@@ -122,7 +131,22 @@ const Signup = ({navigation}) => {
           value={email}
           onChangeText={setEmail}
         />
-
+        {loading && (
+          <ActivityIndicator
+            size="large"
+            color={Color.primary}
+            style={styles.loader}
+          />
+        )}
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: '500',
+            color: '#222E50',
+            marginTop: 20,
+          }}>
+          Gender
+        </Text>
         <View style={styles.gender}>
           <TouchableOpacity
             style={styles.innerc}

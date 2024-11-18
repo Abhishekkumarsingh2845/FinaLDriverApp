@@ -20,6 +20,12 @@ const Otpverifyemail = ({navigation, route}) => {
   const emailotpverify = () => {
     const finalotp = enterotp.join('');
     if (email == finalotp) {
+      // await AsyncStorage.setItem('TOKENN', data.token);
+        // const ttt = await AsyncStorage.getItem('TOKENN');
+
+      //   console.log('topkecccccccccccccccccccccccn->>>>>>>', ttt);
+      //   dispatch(setToken(ttt));
+      //   await AsyncStorage.setItem('maintoken');
       navigation.navigate('Complete');
     } else {
       Alert.alert('Invalid otp');

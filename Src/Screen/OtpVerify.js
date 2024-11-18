@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   StatusBar,
   StyleSheet,
@@ -17,12 +18,14 @@ import {useSelector} from 'react-redux';
 
 const OtpVerify = ({navigation, route}) => {
   const {otp} = route.params;
+  const [loading, setloding] = useState(false);
   const [enterotp, setenterotp] = useState(['', '', '', '', '', '']);
 
   const token = useSelector(state => state.auth.token);
   console.log('tokenn herhdskjzgczhkdcgyjgayegyafgyutyufye->>>', token);
 
   const vfy = () => {
+    setloding(true);
     const finalotp = enterotp.join('');
     if (finalotp == String(otp)) {
       if (token == String(null)) {
@@ -35,6 +38,7 @@ const OtpVerify = ({navigation, route}) => {
     } else {
       Alert.alert('Invalid OTP', 'The entered OTP is incorrect.');
     }
+    setloding(false);
   };
 
   return (
@@ -51,6 +55,14 @@ const OtpVerify = ({navigation, route}) => {
         </Text>
         <Otpbox marginVertical={20} otp={enterotp} setOtp={setenterotp} />
         <PrimaryBtn title={'Verify'} press={vfy} />
+
+        {loading && ( // Show loader if loading is true
+          <ActivityIndicator
+            size="large"
+            color={Color.primary}
+            style={styles.loader}
+          />
+        )}
         <TouchableOpacity style={{marginTop: 30}}>
           <Text style={styles.chngeno}>Change my mobile number</Text>
         </TouchableOpacity>

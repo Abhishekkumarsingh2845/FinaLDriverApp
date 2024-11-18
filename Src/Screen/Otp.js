@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   StatusBar,
   StyleSheet,
   Text,
@@ -20,6 +21,7 @@ import {setToken} from '../Redux/AuthRedux/userSlice';
 
 const Otp = ({route, navigation}) => {
   const dispatch = useDispatch();
+  const [loading, setloding] = useState(false);
   const rettoknn = useSelector(state => state.auth.token);
 
   const {otp, phone} = route.params;
@@ -28,6 +30,7 @@ const Otp = ({route, navigation}) => {
 
   const otpr = async () => {
     try {
+      setloding(true);
       const enteredOtp = enterOtp.join('');
       const response = await axios.post(
         'http://15.206.16.230:5010/api/v1/customer/auth/loginOtpVerify',
@@ -60,6 +63,9 @@ const Otp = ({route, navigation}) => {
         position: 'top,',
       });
     }
+    finally {
+      setloding(false);
+    }
   };
 
   const verify = () => {
@@ -89,6 +95,13 @@ const Otp = ({route, navigation}) => {
         </Text>
         <Otpbox otp={enterOtp} setOtp={setEnterOtp} marginVertical={20} />
         <PrimaryBtn title={'Verify'} press={verify} />
+        {loading && (
+        <ActivityIndicator
+          size="large"
+          color={Color.primary}
+          style={styles.loader}
+        />
+      )}
         <TouchableOpacity style={{marginTop: 30}}>
           <Text style={styles.chngeno}>Change my mobile number</Text>
         </TouchableOpacity>

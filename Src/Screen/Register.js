@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StatusBar, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import Header from '../Component/Header';
 import Back from '../Component/Back';
@@ -12,9 +12,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPhn} from '../Redux/AuthRedux/userSlice';
+import Color from '../Utlis/color';
 
 const Register = ({navigation}) => {
   const dispatch = useDispatch();
+  const [loading, setloding] = useState(false);
   const qq = useSelector(state => state.auth.token);
   const [phone, setphone] = useState('');
 
@@ -28,7 +30,7 @@ const Register = ({navigation}) => {
       });
       return;
     }
-
+    setloding(true);
     try {
       dispatch(setPhn(phone));
 
@@ -49,6 +51,9 @@ const Register = ({navigation}) => {
     } catch (error) {
       console.log('Api', error);
     }
+    finally {
+      setloding(false);
+    }
   };
 
   return (
@@ -64,6 +69,13 @@ const Register = ({navigation}) => {
           onChangeText={setphone}
         />
         <PrimaryBtn title={'Submit'} press={reg} />
+        {loading && ( // Show loader if loading is true
+        <ActivityIndicator
+          size="large"
+          color={Color.primary}
+          style={styles.loader}
+        />
+      )}
         <Text style={styles.txt}>
           By registering, you are agreeing to Mobox’s
         </Text>
