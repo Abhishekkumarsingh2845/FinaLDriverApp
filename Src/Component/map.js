@@ -13,9 +13,10 @@ const MapViewComponent = () => {
   return (
     <View style={styles.container}>
       <MapView
+        mapType={'standard'}
         style={styles.map}
         initialRegion={initialRegion}
-        showsUserLocation={true}>
+      >
         <Marker
           coordinate={{latitude: 37.78825, longitude: -122.4324}}
           title="My Marker"
@@ -29,12 +30,10 @@ const MapViewComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor:"red",
   },
   map: {
     width: '100%',
     height: '100%',
-    // backgroundColor: 'red',
   },
 });
 

@@ -18,7 +18,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {setToken} from '../Redux/AuthRedux/userSlice';
-
+import {postData} from '../Api/Api';
 const Otp = ({route, navigation}) => {
   const dispatch = useDispatch();
   const [loading, setloding] = useState(false);
@@ -32,24 +32,21 @@ const Otp = ({route, navigation}) => {
     try {
       setloding(true);
       const enteredOtp = enterOtp.join('');
-      const response = await axios.post(
-        'http://15.206.16.230:5010/api/v1/customer/auth/loginOtpVerify',
-        {
-          phone: phone,
-          phoneCode: '91',
-          otp: enteredOtp,
-        },
-      );
+      const response = await postData('/auth/loginOtpVerify', {
+        phone: phone,
+        phoneCode: '91',
+        otp: enteredOtp,
+      });
 
-      const {code, status, message, data} = response.data;
-      console.log('API Response:', response.data);
+      const {code, status, message, data} = response;
+      console.log('API Response:->>>>>>>>>>', response.data);
 
-      if (status) {
+      if (code === 200 && status) {
         console.log('OTP verification successful:', data.token);
         dispatch(setToken(data.token));
         if (rettoknn || data.token) {
           console.log('qqqqq->>>>>', rettoknn || data.token);
-          navigation.navigate('BottomTab');
+          navigation.navigate('Register');
         } else {
           navigation.navigate('Signup');
         }
@@ -62,8 +59,7 @@ const Otp = ({route, navigation}) => {
         text2: 'Your Otp is Incorrect',
         position: 'top,',
       });
-    }
-    finally {
+    } finally {
       setloding(false);
     }
   };
@@ -96,13 +92,15 @@ const Otp = ({route, navigation}) => {
         <Otpbox otp={enterOtp} setOtp={setEnterOtp} marginVertical={20} />
         <PrimaryBtn title={'Verify'} press={verify} />
         {loading && (
-        <ActivityIndicator
-          size="large"
-          color={Color.primary}
-          style={styles.loader}
-        />
-      )}
-        <TouchableOpacity style={{marginTop: 30}}>
+          <ActivityIndicator
+            size="large"
+            color={Color.primary}
+            style={styles.loader}
+          />
+        )}
+        <TouchableOpacity
+          style={{marginTop: 30}}
+          onPress={() => navigation.navigate('Login')}>
           <Text style={styles.chngeno}>Change my mobile number</Text>
         </TouchableOpacity>
       </View>

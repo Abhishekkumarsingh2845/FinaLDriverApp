@@ -56,7 +56,7 @@ const Home = ({navigation}) => {
       </View>
       <Userlocation />
 
-      {/* <MapViewComponent /> */}
+      <MapViewComponent />
       <View style={StyleSheet.absoluteFill}>
         <MapViewComponent style={StyleSheet.absoluteFillObject} />
       </View>

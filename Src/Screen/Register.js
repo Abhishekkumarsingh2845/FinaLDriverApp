@@ -1,4 +1,10 @@
-import {ActivityIndicator, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
 import Header from '../Component/Header';
 import Back from '../Component/Back';
@@ -13,6 +19,7 @@ import Toast from 'react-native-toast-message';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPhn} from '../Redux/AuthRedux/userSlice';
 import Color from '../Utlis/color';
+import {postData} from './../Api/Api';
 
 const Register = ({navigation}) => {
   const dispatch = useDispatch();
@@ -33,25 +40,21 @@ const Register = ({navigation}) => {
     setloding(true);
     try {
       dispatch(setPhn(phone));
+      const response = await postData('/auth/phoneOtpSend', {
+        phone: phone,
+        phoneCode: '91',
+      });
 
-      const response = await axios.post(
-        'http://15.206.16.230:5010/api/v1/customer/auth/phoneOtpSend',
-        {
-          phone: phone,
-          phoneCode: '91',
-        },
-      );
-      const {code, status, message, data} = response.data;
-      if (code === 200 && status) {
-        navigation.navigate('OtpVerify', {otp: data.otp});
+      const {code, status, message, data} = response;
+      if (code == 200 && status) {
+        navigation.navigate('OtpVerify', {otp: data.otp, phone});
         console.log('otp', data.otp);
       } else {
         console.log('message', message);
       }
     } catch (error) {
       console.log('Api', error);
-    }
-    finally {
+    } finally {
       setloding(false);
     }
   };
@@ -61,7 +64,7 @@ const Register = ({navigation}) => {
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} backgroundColor={'#F4F4F3'} />
         <Back />
-        <Header title={'Enter Your Mobile No.'} marginTop={20} />
+        <Header title={'Enter Your Mobile No'} marginTop={20} />
         <PrimaryInput
           marginVertical={30}
           placehld={'Enter Mobile No'}
@@ -69,20 +72,20 @@ const Register = ({navigation}) => {
           onChangeText={setphone}
         />
         <PrimaryBtn title={'Submit'} press={reg} />
-        {loading && ( // Show loader if loading is true
-        <ActivityIndicator
-          size="large"
-          color={Color.primary}
-          style={styles.loader}
-        />
-      )}
+        {loading && (
+          <ActivityIndicator
+            size="large"
+            color={Color.primary}
+            style={styles.loader}
+          />
+        )}
         <Text style={styles.txt}>
           By registering, you are agreeing to Mobox’s
         </Text>
         <Text style={styles.txt1}>
           <Text style={{color: 'black'}}>Terms & Conditions</Text> and{' '}
           <Text style={{color: 'black'}}>Privacy and Policies</Text>
-        </Text>{' '}
+        </Text>
         <Toast ref={ref => Toast.setRef(ref)} />
       </View>
     </SafeAreaView>

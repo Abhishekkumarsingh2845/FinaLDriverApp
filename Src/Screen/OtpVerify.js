@@ -15,30 +15,37 @@ import Color from '../Utlis/color';
 import Back from '../Component/Back';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
+import {postData} from '../Api/Api';
 
 const OtpVerify = ({navigation, route}) => {
-  const {otp} = route.params;
+  const {otp, phone} = route.params;
   const [loading, setloding] = useState(false);
   const [enterotp, setenterotp] = useState(['', '', '', '', '', '']);
 
   const token = useSelector(state => state.auth.token);
-  console.log('tokenn herhdskjzgczhkdcgyjgayegyafgyutyufye->>>', token);
+  console.log('tokenn ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>->>>', token);
 
-  const vfy = () => {
-    setloding(true);
-    const finalotp = enterotp.join('');
-    if (finalotp == String(otp)) {
-      if (token == String(null)) {
-        navigation.navigate('Signup');
-        console.log('Navigating to Signup');
-      } else {
+  const vfy = async () => {
+    try {
+      setloding(true);
+      const finalotp = enterotp.join('');
+      const response = await postData('/Auth/verifyPhoneOtp', {
+        phone: phone,
+        phoneCode: '91',
+        otp: finalotp,
+      });
+      const {code, status, message, data} = response;
+      console.log('API Response:->>>>>>>>>>', response.data);
+      if (code == 200 && status) {
         navigation.navigate('BottomTab');
-        console.log('Navigating to BottomTab');
+      } else {
+        Alert.alert('Invalid OTP', 'The entered OTP is incorrect.');
       }
-    } else {
-      Alert.alert('Invalid OTP', 'The entered OTP is incorrect.');
+    } catch (error) {
+      console.error('Error during OTP verification:', error);
+    } finally {
+      setloding(false);
     }
-    setloding(false);
   };
 
   return (
