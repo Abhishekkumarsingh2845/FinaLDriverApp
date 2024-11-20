@@ -1,34 +1,57 @@
-// src/Redux/store.js
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './userSlice';
+// import { configureStore } from '@reduxjs/toolkit';
+// import authReducer from './userSlice';
 
+// export const store = configureStore({
+//   reducer: {
+//     auth: authReducer,
+//   },
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {configureStore} from '@reduxjs/toolkit';
+import authReducer from './userSlice';
+import {persistReducer, persistStore} from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const persistConfig = {
+  key: 'auth',
+  storage: AsyncStorage,
+  whitelist: ['token'],
+};
+const persistedReducer = persistReducer(persistConfig, authReducer);
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: persistedReducer,
   },
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export const persistor = persistStore(store);
 
 
 

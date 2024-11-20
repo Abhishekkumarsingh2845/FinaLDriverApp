@@ -71,13 +71,6 @@
 
 
 
-
-
-
-
-
-
-
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -95,10 +88,9 @@ const Main = () => {
         screenOptions={{
           headerShown: false,
         }}>
-           
-     <Stack.Screen name="AuthNavigator" component={AuthNavigator} /> 
-        <Stack.Screen name="AppNavigator" component={AppNavigator} /> 
-      <Stack.Screen name="BottomTab" component={BottomTab} /> 
+        <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
+        <Stack.Screen name="AppNavigator" component={AppNavigator} />
+        <Stack.Screen name="BottomTab" component={BottomTab} />
       </Stack.Navigator>
     </NavigationContainer>
   );
